@@ -1,7 +1,10 @@
 package main
 
-import "fmt"
+import (
+	_ "github.com/nopecmd/nope/match"
+
+	_ "github.com/nopecmd/nope/commands"
+)
 
 func main() {
-	fmt.Println("Hello world")
 }
