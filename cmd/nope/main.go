@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"github.com/rogpeppe/rog-go/reverse"
 	"os"
 
 	_ "github.com/nopecmd/nope/commands"
@@ -21,15 +21,11 @@ func getLastLine(fname string) string {
 	}
 	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
+	var scanner = reverse.NewScanner(file).Scan()
 
-	var x = ""
-	for scanner.Scan() {
-		x = scanner.Text()
-	}
-	return x
+	return scanner.Text()
 }
 
 func main() {
-	fmt.Println(getLastLine(HISTFILE))
+	// Do nothing for now
 }
