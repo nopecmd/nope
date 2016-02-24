@@ -5,8 +5,9 @@ import (
 	"github.com/rogpeppe/rog-go/reverse"
 	"os"
 
-	_ "github.com/nopecmd/nope/commands"
 	"github.com/nopecmd/nope/match"
+	"github.com/nopecmd/nope/parse"
+	_ "github.com/nopecmd/nope/rules"
 )
 
 // Don't know how to make this a constant
@@ -29,7 +30,10 @@ func getLastLine(fname string) string {
 
 func main() {
 	// test cd
-	undo, err := match.GetUndoCommand("cd ..")
+	var cdRaw = "cd .."
+	var cdCmd = parse.ParseCommand(cdRaw)
+
+	undo, err := match.GetUndoCommand(cdCmd)
 	if err != nil {
 		fmt.Println("donezo")
 	}
