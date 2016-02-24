@@ -21,7 +21,8 @@ func getLastLine(fname string) string {
 	}
 	defer file.Close()
 
-	var scanner = reverse.NewScanner(file).Scan()
+	var scanner = reverse.NewScanner(file)
+	scanner.Scan()
 
 	return scanner.Text()
 }
