@@ -6,7 +6,7 @@ import (
 	"os"
 
 	_ "github.com/nopecmd/nope/commands"
-	_ "github.com/nopecmd/nope/match"
+	"github.com/nopecmd/nope/match"
 )
 
 // Don't know how to make this a constant
@@ -28,5 +28,10 @@ func getLastLine(fname string) string {
 }
 
 func main() {
-	// Do nothing for now
+	// test cd
+	undo, err := match.GetUndoCommand("cd ..")
+	if err != nil {
+		fmt.Println("donezo")
+	}
+	fmt.Println(undo)
 }
