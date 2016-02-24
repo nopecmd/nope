@@ -33,9 +33,19 @@ func main() {
 	var cdRaw = "cd .."
 	var cdCmd = parse.ParseCommand(cdRaw)
 
-	undo, err := match.GetUndoCommand(cdCmd)
+	undoCd, err := match.GetUndoCommand(cdCmd)
 	if err != nil {
 		fmt.Println("donezo")
 	}
-	fmt.Println(undo)
+	fmt.Println(undoCd)
+
+	// test git add -A with extra spaces
+	var gitAddAllRaw = "git    add    -A"
+	var gitAddAllCmd = parse.ParseCommand(gitAddAllRaw)
+
+	undoGitAddAll, err := match.GetUndoCommand(gitAddAllCmd)
+	if err != nil {
+		fmt.Println("donezo")
+	}
+	fmt.Println(undoGitAddAll)
 }

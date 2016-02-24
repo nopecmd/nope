@@ -9,7 +9,7 @@ func ParseCommand(rawCmd string) models.Command {
 	var tokens = strings.Fields(rawCmd)
 
 	return models.Command{
-		RawCommandString: rawCmd,
+		RawCommandString: strings.Join(tokens, " "), // remove unneeded spaces
 		BaseCommand:      tokens[0],
 		Tokens:           tokens,
 	}
