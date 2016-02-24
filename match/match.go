@@ -1,16 +1,14 @@
 package match
 
-import "errors"
+import (
+	"errors"
+	"github.com/nopecmd/nope/models"
+)
 
-type rule struct {
-	IsMatch func(string) bool
-	GetUndo func(string) string
-}
-
-var cmdRules []rule
+var cmdRules []models.Rule
 
 func AddCommand(isMatch func(string) bool, getUndo func(string) string) {
-	var cmdRule = rule{IsMatch: isMatch, GetUndo: getUndo}
+	var cmdRule = models.Rule{IsMatch: isMatch, GetUndo: getUndo}
 	cmdRules = append(cmdRules, cmdRule)
 }
 
