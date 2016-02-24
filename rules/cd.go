@@ -5,12 +5,17 @@ import (
 	"github.com/nopecmd/nope/models"
 )
 
+const (
+	cdBaseCommand = "cd"
+	cdUndoCommand = "cd -"
+)
+
 func isMatchCd(cmd models.Command) bool {
-	return cmd.BaseCommand == "cd"
+	return cmd.BaseCommand == cdBaseCommand
 }
 
 func getUndoCd(cmd models.Command) string {
-	return "cd -"
+	return cdUndoCommand
 }
 
 func init() {
