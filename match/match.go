@@ -7,15 +7,15 @@ import (
 
 var cmdRules []models.Rule
 
-func AddCommand(isMatch func(string) bool, getUndo func(string) string) {
-	var cmdRule = models.Rule{IsMatch: isMatch, GetUndo: getUndo}
-	cmdRules = append(cmdRules, cmdRule)
+func AddRule(isMatch func(models.Command) bool, getUndo func(models.Command) string) {
+	var rule = models.Rule{IsMatch: isMatch, GetUndo: getUndo}
+	cmdRules = append(cmdRules, rule)
 }
 
-func GetUndoCommand(prevCmd string) (string, error) {
+func GetUndoCommand(cmd models.Command) (string, error) {
 	for _, rule := range cmdRules {
-		if rule.IsMatch(prevCmd) {
-			return rule.GetUndo(prevCmd), nil
+		if rule.IsMatch(cmd) {
+			return rule.GetUndo(cmd), nil
 		}
 	}
 

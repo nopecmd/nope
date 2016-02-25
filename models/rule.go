@@ -1,6 +1,6 @@
 package models
 
 type Rule struct {
-	IsMatch func(string) bool
-	GetUndo func(string) string
+	IsMatch func(Command) bool
+	GetUndo func(Command) string
 }
