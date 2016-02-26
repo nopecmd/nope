@@ -2,10 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/rogpeppe/rog-go/reverse"
-	"os"
-
-	_ "github.com/nopecmd/nope/commands"
 	"github.com/nopecmd/nope/match"
 	"github.com/nopecmd/nope/parse"
 	_ "github.com/nopecmd/nope/rules"

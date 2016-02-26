@@ -1,6 +1,7 @@
 package shells
 
 import (
+	"fmt"
 	"github.com/nopecmd/nope/models"
 	"github.com/rogpeppe/rog-go/reverse"
 	"os"
@@ -8,34 +9,35 @@ import (
 
 var CurrentShell models.Shell
 
+const (
+	bashHistoryPath = "/.bash_history"
+	fishHistoryPath = "/.config/fish/fish_history"
+)
+
 func init() {
 	CurrentShell = models.Shell{Name: "fish", GetLastCmd: getLastLineFish}
 }
 
-func getLastLineBash() string {
-	var fname = os.Getenv("HOME") + "/.bash_history"
-	file, err := os.Open(fname)
+func getFileScannerFromPath(path string) (*reverse.Scanner, *os.File) {
+	file, err := os.Open(os.Getenv("HOME") + path)
 
 	if err != nil {
+		fmt.Println("If you could turn on your shell history, that'd be awesome! Thanks! :)")
 		panic(err)
 	}
-	defer file.Close()
+	return reverse.NewScanner(file), file
+}
 
-	var scanner = reverse.NewScanner(file)
+func getLastLineBash() string {
+	scanner, file := getFileScannerFromPath(bashHistoryPath)
+
 	scanner.Scan()
+	file.Close()
 	return scanner.Text()
 }
 
 func getLastLineFish() string {
-	var fname = os.Getenv("HOME") + "/.config/fish/fish_history"
-	file, err := os.Open(fname)
-
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	var scanner = reverse.NewScanner(file)
+	scanner, file := getFileScannerFromPath(fishHistoryPath)
 
 	// Easier way of parsing the fish yml
 	var cmdCount = 0
@@ -46,5 +48,6 @@ func getLastLineFish() string {
 		}
 	}
 
+	file.Close()
 	return scanner.Text()[7:]
 }
