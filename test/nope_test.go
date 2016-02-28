@@ -9,23 +9,27 @@ import (
 	_ "github.com/nopecmd/nope/rules"
 )
 
-func testCmd(raw string) (string, error) {
-	var cmd = parse.ParseCommand(raw)
-	return match.GetUndoCommand(cmd)
+func formatError(rawCmd string, msg string) string {
+	return rawCmd + " command failed: " + msg
+}
+
+func testCmd(rawCmd string, t *testing.T) {
+	cmd, err := parse.ParseCommand(rawCmd)
+	if err != nil {
+		t.Errorf(formatError(rawCmd, "could not parse command"))
+	}
+
+	undo, err := match.GetUndoCommand(cmd)
+	if err != nil {
+		t.Errorf(formatError(rawCmd, "could not match command"))
+	}
+	log.Println(undo)
 }
 
 func TestCd(t *testing.T) {
-	undo, err := testCmd("cd ..")
-	if err != nil {
-		t.Errorf("Cd command failed")
-	}
-	log.Println(undo)
+	testCmd("cd ..", t)
 }
 
 func TestGitAdd(t *testing.T) {
-	undo, err := testCmd("git add -A")
-	if err != nil {
-		t.Errorf("Cd command failed")
-	}
-	log.Println(undo)
+	testCmd("git add -A", t)
 }
