@@ -25,7 +25,7 @@ func TestCd(t *testing.T) {
 func TestGitAdd(t *testing.T) {
 	undo, err := testCmd("git add -A")
 	if err != nil {
-		t.Errorf("Cd command failed")
+		t.Errorf("Git add command failed")
 	}
 	log.Println(undo)
 }
