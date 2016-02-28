@@ -9,10 +9,6 @@ import (
 	_ "github.com/nopecmd/nope/rules"
 )
 
-func formatError(rawCmd string, msg string) string {
-	return rawCmd + " command failed: " + msg
-}
-
 func testCmd(rawCmd string, t *testing.T) {
 	cmd, err := parse.ParseCommand(rawCmd)
 	if err != nil {
