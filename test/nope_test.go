@@ -2,6 +2,7 @@ package nope_test
 
 import (
 	"log"
+	"os"
 	"testing"
 
 	"github.com/nopecmd/nope/match"
@@ -9,23 +10,37 @@ import (
 	_ "github.com/nopecmd/nope/rules"
 )
 
-func testCmd(raw string) (string, error) {
-	var cmd = parse.ParseCommand(raw)
-	return match.GetUndoCommand(cmd)
+func testCommand(rawCmd string, t *testing.T) {
+	cmd, err := parse.ParseCommand(rawCmd)
+	if err != nil {
+		t.Errorf(formatError(rawCmd, "could not parse command"))
+	}
+
+	undo, err := match.GetUndoCommand(cmd)
+	if err != nil {
+		t.Errorf(formatError(rawCmd, "could not match command"))
+	}
+	log.Println(undo)
 }
 
 func TestCd(t *testing.T) {
-	undo, err := testCmd("cd ..")
-	if err != nil {
-		t.Errorf("Cd command failed")
-	}
-	log.Println(undo)
+	testCommand("cd ..", t)
 }
 
 func TestGitAdd(t *testing.T) {
-	undo, err := testCmd("git add -A")
-	if err != nil {
-		t.Errorf("Git add command failed")
+	testCommand("git add -A", t)
+}
+
+func TestTouchSimple(t *testing.T) {
+	var testFileName = "testfile.txt"
+
+	if _, err := os.Create(testFileName); err != nil {
+		t.Errorf("could not create file: " + testFileName)
 	}
-	log.Println(undo)
+	var touchCmd = "touch " + testFileName
+	testCommand(touchCmd, t)
+
+	if err := os.Remove(testFileName); err != nil {
+		t.Errorf("could not remove file: " + testFileName)
+	}
 }
