@@ -3,10 +3,13 @@ package rules
 import (
 	"github.com/nopecmd/nope/match"
 	"github.com/nopecmd/nope/models"
+	"github.com/nopecmd/nope/parse"
+	"strings"
 )
 
 const (
 	touchBaseCommand = "touch"
+	rmBaseCommand    = "rm"
 )
 
 func isMatchTouch(cmd models.Command) bool {
@@ -14,8 +17,8 @@ func isMatchTouch(cmd models.Command) bool {
 }
 
 func getUndoTouch(cmd models.Command) string {
-	// do things here
-	return ""
+	var filePaths = parse.GetFilePathsFromTokens(cmd.Tokens)
+	return rmBaseCommand + " " + strings.Join(filePaths, " ")
 }
 
 func init() {

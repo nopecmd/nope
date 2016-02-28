@@ -2,6 +2,7 @@ package nope_test
 
 import (
 	"log"
+	"os"
 	"testing"
 
 	"github.com/nopecmd/nope/match"
@@ -9,7 +10,7 @@ import (
 	_ "github.com/nopecmd/nope/rules"
 )
 
-func testCmd(rawCmd string, t *testing.T) {
+func testCommand(rawCmd string, t *testing.T) {
 	cmd, err := parse.ParseCommand(rawCmd)
 	if err != nil {
 		t.Errorf(formatError(rawCmd, "could not parse command"))
@@ -23,9 +24,23 @@ func testCmd(rawCmd string, t *testing.T) {
 }
 
 func TestCd(t *testing.T) {
-	testCmd("cd ..", t)
+	testCommand("cd ..", t)
 }
 
 func TestGitAdd(t *testing.T) {
-	testCmd("git add -A", t)
+	testCommand("git add -A", t)
+}
+
+func TestTouchSimple(t *testing.T) {
+	var testFileName = "testfile.txt"
+
+	if _, err := os.Create(testFileName); err != nil {
+		t.Errorf("could not create file: " + testFileName)
+	}
+	var touchCmd = "touch " + testFileName
+	testCommand(touchCmd, t)
+
+	if err := os.Remove(testFileName); err != nil {
+		t.Errorf("could not remove file: " + testFileName)
+	}
 }
