@@ -2,6 +2,7 @@ package shells
 
 import (
 	"fmt"
+	"github.com/mitchellh/go-ps"
 	"github.com/nopecmd/nope/models"
 	"github.com/rogpeppe/rog-go/reverse"
 	"os"
@@ -14,8 +15,22 @@ const (
 	fishHistoryPath = "/.config/fish/fish_history"
 )
 
+var getLastLine = map[string]models.Shell{
+	"bash": models.Shell{Name: "bash", GetLastCmd: getLastLineBash},
+	"fish": models.Shell{Name: "fish", GetLastCmd: getLastLineFish},
+}
+
 func init() {
-	CurrentShell = models.Shell{Name: "fish", GetLastCmd: getLastLineFish}
+	CurrentShell = getShellFromProcess()
+}
+
+func getShellFromProcess() models.Shell {
+	proc, err := ps.FindProcess(os.Getppid())
+	if err != nil {
+		panic(err)
+	}
+
+	return getLastLine[proc.Executable()]
 }
 
 func getFileScannerFromPath(path string) (*reverse.Scanner, *os.File) {
