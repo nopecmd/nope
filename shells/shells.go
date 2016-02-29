@@ -6,6 +6,7 @@ import (
 	"github.com/nopecmd/nope/models"
 	"github.com/rogpeppe/rog-go/reverse"
 	"os"
+	"strings"
 )
 
 var CurrentShell models.Shell
@@ -65,4 +66,8 @@ func getLastLineFish() string {
 
 	file.Close()
 	return scanner.Text()[7:]
+}
+
+func ConcatCommands(commands []string) string {
+	return strings.Join(commands, CurrentShell.Delimiter)
 }

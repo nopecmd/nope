@@ -31,6 +31,10 @@ func TestGitAdd(t *testing.T) {
 	testCommand("git add -A", t)
 }
 
+func TestMv(t *testing.T) {
+	testCommand("mv -f /hello /world", t)
+}
+
 func TestTouchSimple(t *testing.T) {
 	var testFileName = "testfile.txt"
 

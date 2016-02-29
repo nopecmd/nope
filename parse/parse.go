@@ -25,35 +25,6 @@ func GetFilePathsFromTokens(tokens []string) []string {
 	return filePaths
 }
 
-func cleanFlag(s string) string {
-	return strings.TrimPrefix(strings.TrimPrefix(s, "--"), "-")
-}
-
-func isFlag(s string) bool {
-	return strings.HasPrefix(s, "-")
-}
-
-func flagMapFromTokens(tokens []string) map[string][]string {
-	flags := make(map[string][]string)
-
-	for i, token := range tokens {
-		if isFlag(token) {
-			var flag = cleanFlag(token)
-			var flagValue = ""
-			if i+1 < len(tokens) {
-				flagValue = tokens[i+1]
-			}
-
-			if _, ok := flags[flag]; ok {
-				flags[flag] = append(flags[flag], flagValue)
-			} else {
-				flags[flag] = []string{flagValue}
-			}
-		}
-	}
-	return flags
-}
-
 func ParseCommand(rawCmd string) (models.Command, error) {
 	// shlex intelligently splits raw command string base upon shell style rules
 	tokens, err := shlex.Split(rawCmd)
@@ -65,6 +36,5 @@ func ParseCommand(rawCmd string) (models.Command, error) {
 		RawCommandString: strings.Join(tokens, " "), // remove unneeded spaces
 		BaseCommand:      tokens[0],
 		Tokens:           tokens,
-		Flags:            flagMapFromTokens(tokens),
 	}, nil
 }
