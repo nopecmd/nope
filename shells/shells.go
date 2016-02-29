@@ -15,25 +15,22 @@ const (
 	fishHistoryPath = "/.config/fish/fish_history"
 )
 
+var getLastLine = map[string]models.Shell{
+	"bash": models.Shell{Name: "bash", GetLastCmd: getLastLineBash},
+	"fish": models.Shell{Name: "fish", GetLastCmd: getLastLineFish},
+}
+
 func init() {
 	CurrentShell = getShellFromProcess()
 }
 
 func getShellFromProcess() models.Shell {
-	var getLastLine = map[string]func() string{
-		"bash": getLastLineBash,
-		"fish": getLastLineFish,
-	}
-
 	proc, err := ps.FindProcess(os.Getppid())
-
 	if err != nil {
 		panic(err)
 	}
 
-	var procName string = proc.Executable()
-
-	return models.Shell{Name: procName, GetLastCmd: getLastLine[procName]}
+	return getLastLine[proc.Executable()]
 }
 
 func getFileScannerFromPath(path string) (*reverse.Scanner, *os.File) {
