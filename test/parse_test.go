@@ -18,3 +18,12 @@ func TestParseCommandSplit(t *testing.T) {
 	}
 	log.Println(cmd.RawCommandString)
 }
+
+func TestParseCommandFlags(t *testing.T) {
+	var commandWithLotsOfFlags = "curl -O URL1 -O URL2 -m \"there   are spaces here\" --data 'also here'"
+	cmd, err := parse.ParseCommand(commandWithLotsOfFlags)
+	if err != nil {
+		t.Errorf(formatError(commandWithLotsOfFlags, "could not parse command"))
+	}
+	log.Println(cmd.Flags)
+}
