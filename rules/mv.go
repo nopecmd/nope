@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"fmt"
 	"github.com/jessevdk/go-flags"
 	"github.com/nopecmd/nope/match"
 	"github.com/nopecmd/nope/models"
@@ -21,6 +22,10 @@ func isMatchMv(cmd models.Command) bool {
 	return cmd.BaseCommand == mvBaseCommand
 }
 
+func buildMv(froms []string, to string) string {
+	return fmt.Sprintf("%s %s %s", mvBaseCommand, strings.Join(froms, " "), to)
+}
+
 func getUndoMv(cmd models.Command) string {
 	// for now, just remove all flags
 	var err error
@@ -31,14 +36,10 @@ func getUndoMv(cmd models.Command) string {
 	}
 
 	var undoCommands []string
-	var dest = cmd.TokensWithoutFlags[len(cmd.TokensWithoutFlags)-1]
-	for _, from := range cmd.TokensWithoutFlags[0 : len(cmd.TokensWithoutFlags)-1] {
-		var commandTokens = []string{
-			mvBaseCommand,
-			dest,
-			from,
-		}
-		undoCommands = append(undoCommands, strings.Join(commandTokens, " "))
+	var n = len(cmd.TokensWithoutFlags)
+	var to = cmd.TokensWithoutFlags[n-1]
+	for _, from := range cmd.TokensWithoutFlags[:n-1] {
+		undoCommands = append(undoCommands, buildMv([]string{from}, to))
 	}
 	return shells.ConcatCommands(undoCommands)
 }
