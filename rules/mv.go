@@ -6,7 +6,6 @@ import (
 	"github.com/nopecmd/nope/match"
 	"github.com/nopecmd/nope/models"
 	"github.com/nopecmd/nope/shells"
-	"strings"
 )
 
 var mvFlags struct {
@@ -22,8 +21,8 @@ func isMatchMv(cmd models.Command) bool {
 	return cmd.BaseCommand == mvBaseCommand
 }
 
-func buildMv(froms []string, to string) string {
-	return fmt.Sprintf("%s %s %s", mvBaseCommand, strings.Join(froms, " "), to)
+func buildMv(from string, to string) string {
+	return fmt.Sprintf("%s %s %s", mvBaseCommand, from, to)
 }
 
 func getUndoMv(cmd models.Command) string {
@@ -39,7 +38,7 @@ func getUndoMv(cmd models.Command) string {
 	var n = len(cmd.TokensWithoutFlags)
 	var to = cmd.TokensWithoutFlags[n-1]
 	for _, from := range cmd.TokensWithoutFlags[:n-1] {
-		undoCommands = append(undoCommands, buildMv([]string{from}, to))
+		undoCommands = append(undoCommands, buildMv(to, from))
 	}
 	return shells.ConcatCommands(undoCommands)
 }
