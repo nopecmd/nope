@@ -17,8 +17,8 @@ const (
 )
 
 var getLastLine = map[string]models.Shell{
-	"bash": models.Shell{Name: "bash", GetLastCmd: getLastLineBash},
-	"fish": models.Shell{Name: "fish", GetLastCmd: getLastLineFish},
+	"bash": models.Shell{Name: "bash", GetLastCmd: getLastLineBash, Delimiter: " && "},
+	"fish": models.Shell{Name: "fish", GetLastCmd: getLastLineFish, Delimiter: ";"},
 }
 
 func init() {

@@ -35,6 +35,10 @@ func TestMv(t *testing.T) {
 	testCommand("mv -f /hello /world", t)
 }
 
+func TestMvMultiple(t *testing.T) {
+	testCommand("mv /this /should /be /multiple /commands", t)
+}
+
 func TestTouchSimple(t *testing.T) {
 	var testFileName = "testfile.txt"
 

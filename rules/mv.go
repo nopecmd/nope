@@ -13,9 +13,7 @@ var mvFlags struct {
 	Force       bool `short:"f"`
 }
 
-const (
-	mvBaseCommand = "mv"
-)
+const mvBaseCommand = "mv"
 
 func isMatchMv(cmd models.Command) bool {
 	return cmd.BaseCommand == mvBaseCommand
@@ -35,9 +33,9 @@ func getUndoMv(cmd models.Command) string {
 	}
 
 	var undoCommands []string
-	var n = len(cmd.TokensWithoutFlags)
-	var to = cmd.TokensWithoutFlags[n-1]
-	for _, from := range cmd.TokensWithoutFlags[:n-1] {
+	var tokensLen = len(cmd.TokensWithoutFlags)
+	var to = cmd.TokensWithoutFlags[tokensLen-1]
+	for _, from := range cmd.TokensWithoutFlags[:tokensLen-1] {
 		undoCommands = append(undoCommands, buildMv(to, from))
 	}
 	return shells.ConcatCommands(undoCommands)
