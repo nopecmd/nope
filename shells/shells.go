@@ -6,6 +6,7 @@ import (
 	"github.com/nopecmd/nope/models"
 	"github.com/rogpeppe/rog-go/reverse"
 	"os"
+	"strings"
 )
 
 var CurrentShell models.Shell
@@ -16,8 +17,8 @@ const (
 )
 
 var getLastLine = map[string]models.Shell{
-	"bash": models.Shell{Name: "bash", GetLastCmd: getLastLineBash},
-	"fish": models.Shell{Name: "fish", GetLastCmd: getLastLineFish},
+	"bash": models.Shell{Name: "bash", GetLastCmd: getLastLineBash, Delimiter: " && "},
+	"fish": models.Shell{Name: "fish", GetLastCmd: getLastLineFish, Delimiter: ";"},
 }
 
 func init() {
@@ -65,4 +66,8 @@ func getLastLineFish() string {
 
 	file.Close()
 	return scanner.Text()[7:]
+}
+
+func ConcatCommands(commands []string) string {
+	return strings.Join(commands, CurrentShell.Delimiter)
 }
