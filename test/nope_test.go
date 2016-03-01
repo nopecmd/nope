@@ -1,16 +1,16 @@
 package nope_test
 
 import (
-	"log"
 	"os"
 	"testing"
 
 	"github.com/nopecmd/nope/match"
 	"github.com/nopecmd/nope/parse"
 	_ "github.com/nopecmd/nope/rules"
+	"github.com/stretchr/testify/assert"
 )
 
-func testCommand(rawCmd string, t *testing.T) {
+func testCommand(rawCmd string, t *testing.T) string {
 	cmd, err := parse.ParseCommand(rawCmd)
 	if err != nil {
 		t.Errorf(formatError(rawCmd, "could not parse command"))
@@ -20,15 +20,15 @@ func testCommand(rawCmd string, t *testing.T) {
 	if err != nil {
 		t.Errorf(formatError(rawCmd, "could not match command"))
 	}
-	log.Println(undo)
+	return undo
 }
 
 func TestCd(t *testing.T) {
-	testCommand("cd ..", t)
+	assert.Equal(t, testCommand("cd ..", t), "cd -", "the 'cd' command should be correctly matched")
 }
 
 func TestGitAdd(t *testing.T) {
-	testCommand("git add -A", t)
+	assert.Equal(t, testCommand("git add -A", t), "git reset", "the 'git add -A' command should be correctly matched")
 }
 
 func TestMv(t *testing.T) {
@@ -46,7 +46,7 @@ func TestTouchSimple(t *testing.T) {
 		t.Errorf("could not create file: " + testFileName)
 	}
 	var touchCmd = "touch " + testFileName
-	testCommand(touchCmd, t)
+	assert.Equal(t, testCommand(touchCmd, t), "rm testfile.txt", "the 'touch' command should be correctly matched")
 
 	if err := os.Remove(testFileName); err != nil {
 		t.Errorf("could not remove file: " + testFileName)
