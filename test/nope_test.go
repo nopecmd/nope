@@ -10,6 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func getTestPrompt(cmd string) string {
+	return "the '" + cmd + "' command should be correctly matched"
+}
+
 func testCommand(rawCmd string, t *testing.T) string {
 	cmd, err := parse.ParseCommand(rawCmd)
 	if err != nil {
@@ -24,11 +28,11 @@ func testCommand(rawCmd string, t *testing.T) string {
 }
 
 func TestCd(t *testing.T) {
-	assert.Equal(t, testCommand("cd ..", t), "cd -", "the 'cd' command should be correctly matched")
+	assert.Equal(t, testCommand("cd ..", t), "cd -", getTestPrompt("cd"))
 }
 
 func TestGitAdd(t *testing.T) {
-	assert.Equal(t, testCommand("git add -A", t), "git reset", "the 'git add -A' command should be correctly matched")
+	assert.Equal(t, testCommand("git add -A", t), "git reset", getTestPrompt("git add"))
 }
 
 func TestMv(t *testing.T) {
@@ -46,7 +50,7 @@ func TestTouchSimple(t *testing.T) {
 		t.Errorf("could not create file: " + testFileName)
 	}
 	var touchCmd = "touch " + testFileName
-	assert.Equal(t, testCommand(touchCmd, t), "rm testfile.txt", "the 'touch' command should be correctly matched")
+	assert.Equal(t, testCommand(touchCmd, t), "rm testfile.txt", getTestPrompt("touch"))
 
 	if err := os.Remove(testFileName); err != nil {
 		t.Errorf("could not remove file: " + testFileName)
