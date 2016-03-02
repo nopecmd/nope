@@ -1,10 +1,10 @@
 package nope_test
 
 import (
-	"log"
 	"testing"
 
 	"github.com/nopecmd/nope/parse"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParseCommandSplit(t *testing.T) {
@@ -16,5 +16,5 @@ func TestParseCommandSplit(t *testing.T) {
 	if len(cmd.Tokens) != 4 {
 		t.Errorf(formatError(commandWithRandomSpaces, "incorrectly tokenized command"))
 	}
-	log.Println(cmd.RawCommandString)
+	assert.Equal(t, cmd.RawCommandString, "git commit -m there   are random spaces in here", "Parsing removes unnecessary spaces in the raw command")
 }
