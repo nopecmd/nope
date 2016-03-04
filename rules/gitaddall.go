@@ -14,8 +14,8 @@ func isMatchGitAddAll(cmd models.Command) bool {
 	return cmd.RawCommandString == gitAddAllFullCommand
 }
 
-func getUndoGitAddAll(cmd models.Command) string {
-	return gitAddAllUndoCommand
+func getUndoGitAddAll(cmd models.Command) (string, error) {
+	return gitAddAllUndoCommand, nil
 }
 
 func init() {

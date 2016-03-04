@@ -18,7 +18,7 @@ func isMatchTouch(cmd models.Command) bool {
 	return cmd.BaseCommand == touchBaseCommand
 }
 
-func getUndoTouch(cmd models.Command) string {
+func getUndoTouch(cmd models.Command) (string, error) {
 	var touchFlags struct {
 		AccessAndModification string `short:"A"`
 		Access                bool   `short:"a"`
@@ -31,14 +31,14 @@ func getUndoTouch(cmd models.Command) string {
 	}
 	filteredTokens, err := flags.ParseArgs(&touchFlags, cmd.Tokens[1:])
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	if touchFlags.DontCreate || touchFlags.ChangeSymLink {
-		return ""
+		return "", nil
 	}
 
 	var filePaths = parse.GetFilePathsFromTokens(filteredTokens)
-	return rmBaseCommand + " " + strings.Join(filePaths, " ")
+	return rmBaseCommand + " " + strings.Join(filePaths, " "), nil
 }
 
 func init() {

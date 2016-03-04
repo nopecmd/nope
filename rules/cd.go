@@ -14,8 +14,8 @@ func isMatchCd(cmd models.Command) bool {
 	return cmd.BaseCommand == cdBaseCommand
 }
 
-func getUndoCd(cmd models.Command) string {
-	return cdUndoCommand
+func getUndoCd(cmd models.Command) (string, error) {
+	return cdUndoCommand, nil
 }
 
 func init() {
