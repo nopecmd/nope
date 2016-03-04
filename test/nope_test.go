@@ -14,16 +14,21 @@ func getTestPrompt(cmd string) string {
 	return "the '" + cmd + "' command should be correctly matched"
 }
 
-func testCommand(rawCmd string, t *testing.T) string {
+func testParseCommand(rawCmd string, t *testing.T) (string, error) {
 	cmd, err := parse.ParseCommand(rawCmd)
 	if err != nil {
 		t.Errorf(formatError(rawCmd, "could not parse command"))
 	}
 
-	undo, err := match.GetUndoCommand(cmd)
+	return match.GetUndoCommand(cmd)
+}
+
+func testCommand(rawCmd string, t *testing.T) string {
+	undo, err := testParseCommand(rawCmd, t)
 	if err != nil {
 		t.Errorf(formatError(rawCmd, "could not match command"))
 	}
+
 	return undo
 }
 
@@ -62,4 +67,10 @@ func TestTouch(t *testing.T) {
 	if err := os.Remove(testFileName); err != nil {
 		t.Errorf("could not remove file: " + testFileName)
 	}
+}
+
+func TestTouchBadFlags(t *testing.T) {
+	var touchCmdWithBadFlags = "touch -z thing"
+	_, err := testParseCommand(touchCmdWithBadFlags, t)
+	assert.NotNil(t, err, "touch should not allow z flag")
 }
