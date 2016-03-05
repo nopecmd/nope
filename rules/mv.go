@@ -21,22 +21,19 @@ func buildMv(from string, to string) string {
 	return fmt.Sprintf("%s %s %s", mvBaseCommand, from, to)
 }
 
-func getUndoMv(cmd models.Command) string {
-	// for now, just remove all flags
-	var err error
-	cmd.TokensWithoutFlags, err = flags.ParseArgs(&mvFlags, cmd.Tokens[1:])
-
+func getUndoMv(cmd models.Command) (string, error) {
+	filteredTokens, err := flags.ParseArgs(&mvFlags, cmd.Tokens[1:])
 	if err != nil {
-		panic(err)
+		return "", nil
 	}
 
 	var undoCommands []string
-	var tokensLen = len(cmd.TokensWithoutFlags)
-	var to = cmd.TokensWithoutFlags[tokensLen-1]
-	for _, from := range cmd.TokensWithoutFlags[:tokensLen-1] {
+	var tokensLen = len(filteredTokens)
+	var to = filteredTokens[tokensLen-1]
+	for _, from := range filteredTokens[:tokensLen-1] {
 		undoCommands = append(undoCommands, buildMv(to, from))
 	}
-	return shells.ConcatCommands(undoCommands)
+	return shells.ConcatCommands(undoCommands), nil
 }
 
 func init() {
