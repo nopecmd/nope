@@ -18,7 +18,7 @@ func getUndoMkdir(cmd models.Command) (string, error) {
 		CreateInterm bool   `short:"p"`
 		Verbose      bool   `short:"v"`
 	}
-	filteredTokens, err := flags.ParseArgs(&mkdirFlags, cmd.Tokens[1:])
+	filteredTokens, err := flags.ParseArgs(&mkdirFlags, cmd.TokensWithoutBase)
 	if err != nil {
 		return "", err
 	}

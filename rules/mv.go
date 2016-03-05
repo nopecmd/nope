@@ -22,7 +22,7 @@ func buildMv(from string, to string) string {
 }
 
 func getUndoMv(cmd models.Command) (string, error) {
-	filteredTokens, err := flags.ParseArgs(&mvFlags, cmd.Tokens[1:])
+	filteredTokens, err := flags.ParseArgs(&mvFlags, cmd.TokensWithoutBase)
 	if err != nil {
 		return "", nil
 	}

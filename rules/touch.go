@@ -24,7 +24,7 @@ func getUndoTouch(cmd models.Command) (string, error) {
 		SpecFile              string `short:"r"`
 		Time                  string `short:"t"`
 	}
-	filteredTokens, err := flags.ParseArgs(&touchFlags, cmd.Tokens[1:])
+	filteredTokens, err := flags.ParseArgs(&touchFlags, cmd.TokensWithoutBase)
 	if err != nil {
 		return "", err
 	}
