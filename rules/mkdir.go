@@ -12,7 +12,7 @@ func isMatchMkdir(cmd models.Command) bool {
 	return cmd.BaseCommand == mkdirBaseCommand
 }
 
-func getUndoMkdir(cmd models.Command) string {
+func getUndoMkdir(cmd models.Command) (string, error) {
 	var mkdirFlags struct {
 		Mode         string `short:"m"`
 		CreateInterm bool   `short:"p"`
@@ -20,11 +20,11 @@ func getUndoMkdir(cmd models.Command) string {
 	}
 	filteredTokens, err := flags.ParseArgs(&mkdirFlags, cmd.Tokens[1:])
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 	var dirPaths = parse.GetFilePathsFromTokens(filteredTokens)
 
-	return rmBaseCommand + " -rf " + strings.Join(dirPaths, " ")
+	return rmBaseCommand + " -rf " + strings.Join(dirPaths, " "), nil
 }
 
 func init() {
