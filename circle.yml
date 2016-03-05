@@ -12,7 +12,7 @@ dependencies:
 
 test:
   pre:
-    - godep go install github.com/nopecmd/nope/cmd/nope
+    - go vet ./...
 
   override:
     - go test ./test/*
