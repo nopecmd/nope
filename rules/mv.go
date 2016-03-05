@@ -13,8 +13,6 @@ var mvFlags struct {
 	Force       bool `short:"f"`
 }
 
-const mvBaseCommand = "mv"
-
 func isMatchMv(cmd models.Command) bool {
 	return cmd.BaseCommand == mvBaseCommand
 }

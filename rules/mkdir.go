@@ -8,8 +8,6 @@ import (
 	"strings"
 )
 
-const mkdirBaseCommand = "mkdir"
-
 func isMatchMkdir(cmd models.Command) bool {
 	return cmd.BaseCommand == mkdirBaseCommand
 }

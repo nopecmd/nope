@@ -7,11 +7,6 @@ import (
 	"strings"
 )
 
-const (
-	touchBaseCommand = "touch"
-	rmBaseCommand    = "rm"
-)
-
 func isMatchTouch(cmd models.Command) bool {
 	return cmd.BaseCommand == touchBaseCommand
 }
