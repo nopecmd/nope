@@ -27,3 +27,6 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+# Go dependency workspace
+Godeps/_workspace/*
