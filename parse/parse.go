@@ -33,8 +33,9 @@ func ParseCommand(rawCmd string) (models.Command, error) {
 	}
 
 	return models.Command{
-		RawCommandString: strings.Join(tokens, " "), // remove unneeded spaces
-		BaseCommand:      tokens[0],
-		Tokens:           tokens,
+		RawCommandString:  strings.Join(tokens, " "), // remove unneeded spaces
+		BaseCommand:       tokens[0],
+		Tokens:            tokens,
+		TokensWithoutBase: tokens[1:],
 	}, nil
 }

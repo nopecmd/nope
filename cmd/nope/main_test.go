@@ -75,3 +75,40 @@ func TestTouchBadFlags(t *testing.T) {
 	_, err := testParseCommand(touchCmdWithBadFlags, t)
 	assert.NotNil(t, err, "touch should not allow z flag")
 }
+
+func TestMkdir(t *testing.T) {
+	var testDir1 = "dog"
+	var testDir2 = "cat"
+	var testDir3 = "turtle"
+	var testDir4 = "ferret"
+
+	var testSubDir1 = testDir2 + "/" + testDir3
+	var testSubDir2 = testDir2 + "/" + testDir4
+
+	if err := os.MkdirAll(testDir1, 0777); err != nil {
+		t.Errorf("could not create directory" + testDir1)
+	}
+	if err := os.MkdirAll(testSubDir1, 0777); err != nil {
+		t.Errorf("could not create directory" + testSubDir1)
+	}
+
+	var mkdirCmd = "mkdir dog cat/turtle"
+	var expected = "rm -rf dog cat/turtle"
+	assert.Equal(t, testCommand(mkdirCmd, t), expected, getTestPrompt("mkdir"))
+
+	var mkdirCmdWithP = "mkdir -p dog cat/turtle"
+	var expectedWithP = "rm -rf dog cat"
+	assert.Equal(t, testCommand(mkdirCmdWithP, t), expectedWithP, getTestPrompt("mkdir"))
+
+	if err := os.MkdirAll(testSubDir2, 0777); err != nil {
+		t.Errorf("could not create directory" + testSubDir2)
+	}
+	assert.Equal(t, testCommand(mkdirCmdWithP, t), expected, getTestPrompt("mkdir"))
+
+	if err := os.Remove(testDir1); err != nil {
+		t.Errorf("could not remove direcotry " + testDir1)
+	}
+	if err := os.RemoveAll(testDir2); err != nil {
+		t.Errorf("could not remove direcotry " + testDir2)
+	}
+}

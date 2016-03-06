@@ -9,11 +9,6 @@ import (
 	"github.com/nopecmd/nope/parse"
 )
 
-const (
-	touchBaseCommand = "touch"
-	rmBaseCommand    = "rm"
-)
-
 func isMatchTouch(cmd models.Command) bool {
 	return cmd.BaseCommand == touchBaseCommand
 }
@@ -29,7 +24,7 @@ func getUndoTouch(cmd models.Command) (string, error) {
 		SpecFile              string `short:"r"`
 		Time                  string `short:"t"`
 	}
-	filteredTokens, err := flags.ParseArgs(&touchFlags, cmd.Tokens[1:])
+	filteredTokens, err := flags.ParseArgs(&touchFlags, cmd.TokensWithoutBase)
 	if err != nil {
 		return "", err
 	}

@@ -13,8 +13,6 @@ var mvFlags struct {
 	Force       bool `short:"f"`
 }
 
-const mvBaseCommand = "mv"
-
 func isMatchMv(cmd models.Command) bool {
 	return cmd.BaseCommand == mvBaseCommand
 }
@@ -24,9 +22,9 @@ func buildMv(from string, to string) string {
 }
 
 func getUndoMv(cmd models.Command) (string, error) {
-	filteredTokens, err := flags.ParseArgs(&mvFlags, cmd.Tokens[1:])
+	filteredTokens, err := flags.ParseArgs(&mvFlags, cmd.TokensWithoutBase)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	var undoCommands []string
