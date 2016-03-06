@@ -1,4 +1,4 @@
-package nope_test
+package main
 
 import (
 	"os"
@@ -7,6 +7,7 @@ import (
 	"github.com/nopecmd/nope/match"
 	"github.com/nopecmd/nope/parse"
 	_ "github.com/nopecmd/nope/rules"
+	"github.com/nopecmd/nope/utils"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,7 +18,7 @@ func getTestPrompt(cmd string) string {
 func testParseCommand(rawCmd string, t *testing.T) (string, error) {
 	cmd, err := parse.ParseCommand(rawCmd)
 	if err != nil {
-		t.Errorf(formatError(rawCmd, "could not parse command"))
+		t.Errorf(utils.FormatError(rawCmd, "could not parse command"))
 	}
 
 	return match.GetUndoCommand(cmd)
@@ -26,7 +27,7 @@ func testParseCommand(rawCmd string, t *testing.T) (string, error) {
 func testCommand(rawCmd string, t *testing.T) string {
 	undo, err := testParseCommand(rawCmd, t)
 	if err != nil {
-		t.Errorf(formatError(rawCmd, "could not match command"))
+		t.Errorf(utils.FormatError(rawCmd, "could not match command"))
 	}
 
 	return undo
