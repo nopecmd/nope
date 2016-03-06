@@ -1,5 +1,7 @@
 # nope
 
+![CircleCI badge](https://circleci.com/gh/nopecmd/nope.png?style=shield)
+
 ### Coding convention/style guide
 
 Follow https://github.com/golang/go/wiki/CodeReviewComments.
