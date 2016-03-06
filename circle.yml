@@ -1,0 +1,18 @@
+machine:
+  environment:
+    VCS: "github.com"
+    COPY_PATH: "${HOME}/.go_workspace/src/${VCS}/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+  post:
+    - mkdir -p ${COPY_PATH}
+
+dependencies:
+  pre:
+    - go get -u github.com/tools/godep
+
+test:
+  pre:
+    - cp -rf ./ ${COPY_PATH}
+    - godep restore
+    - go vet ./...
+  override:
+    - godep go test ./... -v
