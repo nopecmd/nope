@@ -7,7 +7,7 @@ import (
 	"github.com/jessevdk/go-flags"
 	"github.com/nopecmd/nope/match"
 	"github.com/nopecmd/nope/models"
-	"github.com/nopecmd/nope/parse"
+	"github.com/nopecmd/nope/utils"
 )
 
 func isMatchMkdir(cmd models.Command) bool {
@@ -59,7 +59,7 @@ func getUndoMkdir(cmd models.Command) (string, error) {
 		return "", err
 	}
 
-	var paths = parse.GetFilePathsFromTokens(filteredTokens)
+	var paths = utils.GetFilePathsFromTokens(filteredTokens)
 
 	if mkdirFlags.CreateInterm {
 		paths, err = getCorrectPathsToDelete(paths)

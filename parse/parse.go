@@ -1,29 +1,11 @@
 package parse
 
 import (
+	"strings"
+
 	"github.com/flynn/go-shlex"
 	"github.com/nopecmd/nope/models"
-	"os"
-	"strings"
 )
-
-func IsValidFilePath(path string) bool {
-	if _, err := os.Stat(path); err != nil {
-		return false
-	}
-	return true
-}
-
-func GetFilePathsFromTokens(tokens []string) []string {
-	var filePaths []string
-
-	for _, token := range tokens {
-		if IsValidFilePath(token) {
-			filePaths = append(filePaths, token)
-		}
-	}
-	return filePaths
-}
 
 func ParseCommand(rawCmd string) (models.Command, error) {
 	// shlex intelligently splits raw command string base upon shell style rules
