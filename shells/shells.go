@@ -2,11 +2,12 @@ package shells
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/mitchellh/go-ps"
 	"github.com/nopecmd/nope/models"
 	"github.com/rogpeppe/rog-go/reverse"
-	"os"
-	"strings"
 )
 
 var CurrentShell models.Shell
@@ -16,7 +17,7 @@ const (
 	fishHistoryPath = "/.config/fish/fish_history"
 )
 
-var getLastLine = map[string]models.Shell{
+var shellNames = map[string]models.Shell{
 	"bash": models.Shell{Name: "bash", GetLastCmd: getLastLineBash, Delimiter: " && "},
 	"fish": models.Shell{Name: "fish", GetLastCmd: getLastLineFish, Delimiter: ";"},
 }
@@ -31,7 +32,12 @@ func getShellFromProcess() models.Shell {
 		panic(err)
 	}
 
-	return getLastLine[proc.Executable()]
+	return shellNames[proc.Executable()]
+}
+
+// used for testing purposes
+func SetShell(name string) {
+	CurrentShell = shellNames[name]
 }
 
 func getFileScannerFromPath(path string) (*reverse.Scanner, *os.File) {
@@ -69,5 +75,5 @@ func getLastLineFish() string {
 }
 
 func ConcatCommands(commands []string) string {
-	return strings.Join(commands, CurrentShell.Delimiter)
+	return strings.Join(commands, fmt.Sprintf(" %s ", CurrentShell.Delimiter))
 }

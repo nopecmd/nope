@@ -7,9 +7,14 @@ import (
 	"github.com/nopecmd/nope/match"
 	"github.com/nopecmd/nope/parse"
 	_ "github.com/nopecmd/nope/rules"
+	"github.com/nopecmd/nope/shells"
 	"github.com/nopecmd/nope/utils"
 	"github.com/stretchr/testify/assert"
 )
+
+func init() {
+	shells.SetShell("fish")
+}
 
 func getTestPrompt(cmd string) string {
 	return "the '" + cmd + "' command should be correctly matched"
@@ -27,7 +32,6 @@ func testParseCommand(rawCmd string, t *testing.T) (string, error) {
 func testCommand(rawCmd string, t *testing.T) string {
 	undo, err := testParseCommand(rawCmd, t)
 	if err != nil {
-		fmt.Println(err)
 		t.Errorf(utils.FormatError(rawCmd, "could not match command"))
 	}
 
@@ -82,11 +86,40 @@ func TestMvFiles(t *testing.T) {
 
 	assert.Equal(t, testCommand(mvCommand, t), expected, getTestPrompt("mv"))
 
+	utils.RemoveFile(testToPath, t)
+
+	// move
+	var newPath = fmt.Sprintf("%s/%s", testToPath, testFromFile)
+
+	utils.CreateDir(testToPath, t)
+	utils.CreateFile(newPath, t)
+
+	expected = fmt.Sprintf("mv %s %s", newPath, testFromDir)
+
+	assert.Equal(t, testCommand(mvCommand, t), expected, getTestPrompt("mv"))
+
 	utils.RemoveDir(testToDir, t)
 }
 
 func TestMvMultiple(t *testing.T) {
-	testCommand("mv /this /should /be /multiple /commands", t)
+	var testToDir = "dogs"
+	var testFromFile = "corgi"
+	var testFromDir = "terriers"
+
+	var testFilePath = fmt.Sprintf("%s/%s", testToDir, testFromFile)
+	var testDirPath = fmt.Sprintf("%s/%s", testToDir, testFromDir)
+
+	utils.CreateDir(testToDir, t)
+	utils.CreateDir(testDirPath, t)
+	utils.CreateFile(testFilePath, t)
+
+	var mvCommand = fmt.Sprintf("mv %s %s %s", testFromFile, testFromDir, testToDir)
+	var delimiter = shells.CurrentShell.Delimiter
+	var expected = fmt.Sprintf("mv %s . %s mv %s .", testFilePath, delimiter, testDirPath)
+
+	assert.Equal(t, testCommand(mvCommand, t), expected, getTestPrompt("mv"))
+
+	utils.RemoveDir(testToDir, t)
 }
 
 func TestTouch(t *testing.T) {
