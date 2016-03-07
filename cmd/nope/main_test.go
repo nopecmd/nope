@@ -1,7 +1,7 @@
 package main
 
 import (
-	"os"
+	"fmt"
 	"testing"
 
 	"github.com/nopecmd/nope/match"
@@ -27,6 +27,7 @@ func testParseCommand(rawCmd string, t *testing.T) (string, error) {
 func testCommand(rawCmd string, t *testing.T) string {
 	undo, err := testParseCommand(rawCmd, t)
 	if err != nil {
+		fmt.Println(err)
 		t.Errorf(utils.FormatError(rawCmd, "could not match command"))
 	}
 
@@ -41,8 +42,47 @@ func TestGitAdd(t *testing.T) {
 	assert.Equal(t, testCommand("git add -A", t), "git reset", getTestPrompt("git add"))
 }
 
-func TestMv(t *testing.T) {
-	testCommand("mv -f /hello /world", t)
+func TestMvDirs(t *testing.T) {
+	var testFrom = "hello"
+	var testTo = "world"
+
+	// rename
+	utils.CreateDir(testTo, t)
+
+	var mvCommand = fmt.Sprintf("mv %s %s", testFrom, testTo)
+	var expected = fmt.Sprintf("mv %s %s", testTo, testFrom)
+
+	assert.Equal(t, testCommand(mvCommand, t), expected, getTestPrompt("mv"))
+
+	//move
+	var subDir = fmt.Sprintf("%s/%s", testTo, testFrom)
+	utils.CreateDir(subDir, t)
+
+	expected = fmt.Sprintf("mv %s .", subDir)
+	assert.Equal(t, testCommand(mvCommand, t), expected, getTestPrompt("mv"))
+
+	utils.RemoveDir(testTo, t)
+}
+
+func TestMvFiles(t *testing.T) {
+	var testToDir = "bucket"
+	var testToFile = "dog"
+	var testToPath = fmt.Sprintf("%s/%s", testToDir, testToFile)
+
+	var testFromDir = "house/room/bathroom"
+	var testFromFile = "cat"
+	var testFromPath = fmt.Sprintf("%s/%s", testFromDir, testFromFile)
+
+	utils.CreateDir(testToDir, t)
+	utils.CreateFile(testToPath, t)
+
+	// rename
+	var mvCommand = fmt.Sprintf("mv %s %s", testFromPath, testToPath)
+	var expected = fmt.Sprintf("mv %s %s", testToPath, testFromPath)
+
+	assert.Equal(t, testCommand(mvCommand, t), expected, getTestPrompt("mv"))
+
+	utils.RemoveDir(testToDir, t)
 }
 
 func TestMvMultiple(t *testing.T) {
@@ -53,9 +93,8 @@ func TestTouch(t *testing.T) {
 	var testFileName = "testfile.txt"
 	var rmCmd = "rm testfile.txt"
 
-	if _, err := os.Create(testFileName); err != nil {
-		t.Errorf("could not create file: " + testFileName)
-	}
+	utils.CreateFile(testFileName, t)
+
 	var touchCmd = "touch " + testFileName
 	assert.Equal(t, testCommand(touchCmd, t), rmCmd, getTestPrompt("touch"))
 
@@ -65,9 +104,7 @@ func TestTouch(t *testing.T) {
 	var touchCmdSymLink = "touch -r dontdelete " + testFileName
 	assert.Equal(t, testCommand(touchCmdSymLink, t), rmCmd, getTestPrompt("touch"))
 
-	if err := os.Remove(testFileName); err != nil {
-		t.Errorf("could not remove file: " + testFileName)
-	}
+	utils.RemoveFile(testFileName, t)
 }
 
 func TestTouchBadFlags(t *testing.T) {
@@ -85,12 +122,8 @@ func TestMkdir(t *testing.T) {
 	var testSubDir1 = testDir2 + "/" + testDir3
 	var testSubDir2 = testDir2 + "/" + testDir4
 
-	if err := os.MkdirAll(testDir1, 0777); err != nil {
-		t.Errorf("could not create directory" + testDir1)
-	}
-	if err := os.MkdirAll(testSubDir1, 0777); err != nil {
-		t.Errorf("could not create directory" + testSubDir1)
-	}
+	utils.CreateDir(testDir1, t)
+	utils.CreateDir(testSubDir1, t)
 
 	var mkdirCmd = "mkdir dog cat/turtle"
 	var expected = "rm -rf dog cat/turtle"
@@ -100,15 +133,10 @@ func TestMkdir(t *testing.T) {
 	var expectedWithP = "rm -rf dog cat"
 	assert.Equal(t, testCommand(mkdirCmdWithP, t), expectedWithP, getTestPrompt("mkdir"))
 
-	if err := os.MkdirAll(testSubDir2, 0777); err != nil {
-		t.Errorf("could not create directory" + testSubDir2)
-	}
+	utils.CreateDir(testSubDir2, t)
+
 	assert.Equal(t, testCommand(mkdirCmdWithP, t), expected, getTestPrompt("mkdir"))
 
-	if err := os.Remove(testDir1); err != nil {
-		t.Errorf("could not remove direcotry " + testDir1)
-	}
-	if err := os.RemoveAll(testDir2); err != nil {
-		t.Errorf("could not remove direcotry " + testDir2)
-	}
+	utils.RemoveDir(testDir1, t)
+	utils.RemoveDir(testDir2, t)
 }
