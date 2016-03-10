@@ -6,7 +6,7 @@ import (
 	"github.com/jessevdk/go-flags"
 	"github.com/nopecmd/nope/match"
 	"github.com/nopecmd/nope/models"
-	"github.com/nopecmd/nope/parse"
+	"github.com/nopecmd/nope/utils"
 )
 
 func isMatchTouch(cmd models.Command) bool {
@@ -32,7 +32,7 @@ func getUndoTouch(cmd models.Command) (string, error) {
 		return "", nil
 	}
 
-	var filePaths = parse.GetFilePathsFromTokens(filteredTokens)
+	var filePaths = utils.GetFilePathsFromTokens(filteredTokens)
 	return rmBaseCommand + " " + strings.Join(filePaths, " "), nil
 }
 
